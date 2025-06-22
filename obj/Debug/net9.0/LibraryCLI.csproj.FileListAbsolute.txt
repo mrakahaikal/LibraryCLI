@@ -1,0 +1,14 @@
+D:\Projects\CSharp\LibraryCLI\obj\Debug\net9.0\LibraryCLI.GeneratedMSBuildEditorConfig.editorconfig
+D:\Projects\CSharp\LibraryCLI\obj\Debug\net9.0\LibraryCLI.AssemblyInfoInputs.cache
+D:\Projects\CSharp\LibraryCLI\obj\Debug\net9.0\LibraryCLI.AssemblyInfo.cs
+D:\Projects\CSharp\LibraryCLI\obj\Debug\net9.0\LibraryCLI.csproj.CoreCompileInputs.cache
+D:\Projects\CSharp\LibraryCLI\bin\Debug\net9.0\LibraryCLI.exe
+D:\Projects\CSharp\LibraryCLI\bin\Debug\net9.0\LibraryCLI.deps.json
+D:\Projects\CSharp\LibraryCLI\bin\Debug\net9.0\LibraryCLI.runtimeconfig.json
+D:\Projects\CSharp\LibraryCLI\bin\Debug\net9.0\LibraryCLI.dll
+D:\Projects\CSharp\LibraryCLI\bin\Debug\net9.0\LibraryCLI.pdb
+D:\Projects\CSharp\LibraryCLI\obj\Debug\net9.0\LibraryCLI.dll
+D:\Projects\CSharp\LibraryCLI\obj\Debug\net9.0\refint\LibraryCLI.dll
+D:\Projects\CSharp\LibraryCLI\obj\Debug\net9.0\LibraryCLI.pdb
+D:\Projects\CSharp\LibraryCLI\obj\Debug\net9.0\LibraryCLI.genruntimeconfig.cache
+D:\Projects\CSharp\LibraryCLI\obj\Debug\net9.0\ref\LibraryCLI.dll
