@@ -12,3 +12,4 @@ D:\Projects\CSharp\LibraryCLI\obj\Debug\net9.0\refint\LibraryCLI.dll
 D:\Projects\CSharp\LibraryCLI\obj\Debug\net9.0\LibraryCLI.pdb
 D:\Projects\CSharp\LibraryCLI\obj\Debug\net9.0\LibraryCLI.genruntimeconfig.cache
 D:\Projects\CSharp\LibraryCLI\obj\Debug\net9.0\ref\LibraryCLI.dll
+D:\Projects\CSharp\LibraryCLI\obj\Debug\net9.0\LibraryCLI.sourcelink.json

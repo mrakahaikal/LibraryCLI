@@ -1,6 +1,18 @@
 ﻿using Domain.Entities;
 using Infrastructure;
 using Infrastructure.Seed;
+using Application.Services;
+using Application.Repositories.InMemory;
+using Application.Helpers;
+
+var bookRepo = new BookRepository();
+var userRepo = new UserRepository();
+var trxRepo = new BorrowTransactionRepository();
+
+var borrowService = new BorrowService(bookRepo, userRepo, trxRepo);
+var returnService = new ReturnService(bookRepo, trxRepo);
+var bookService = new BookService(bookRepo);
+
 
 Seeder.Seed();
 
@@ -14,20 +26,20 @@ while (isRunning)
     Console.WriteLine("2. Peminjaman Buku");
     Console.WriteLine("3. Pengembalian Buku");
     Console.WriteLine("4. Exit");
-    Console.Write("Pilihan Anda");
+    Console.Write("Pilihan Anda: ");
 
     var input = Console.ReadLine();
 
     switch (input)
     {
         case "1":
-            ShowAllBooks();
+            ShowAllBooks(bookService);
             break;
         case "2":
-            BorrowBook();
+            BorrowBook(borrowService);
             break;
         case "3":
-            ReturnBook();
+            ReturnBook(returnService);
             break;
         case "4":
             isRunning = false;
@@ -40,21 +52,29 @@ while (isRunning)
     }
 }
 
-static void ShowAllBooks()
+static void ShowAllBooks(BookService bookService)
 {
     Console.Clear();
     Console.WriteLine("=== Daftar Buku ===");
 
-    if (!DataStore.Books.Any())
+    var books = bookService.GetAllBooks();
+    if (!books.Any())
     {
         Console.WriteLine("Belum ada buku dalam sistem.");
     }
     else
     {
-        foreach (var book in DataStore.Books)
+        ConsoleTableHelper.PrintHeader(("ID", 3), ("Judul", 40), ("Penulis", 20), ("Status", 10));
+
+        foreach (var book in books)
         {
             var status = book.IsBorrowed ? "❌ Dipinjam" : "✅ Tersedia";
-            Console.WriteLine($"{book.Id}. {book.Title} - {book.Author} [{status}]");
+            ConsoleTableHelper.PrintRow(
+                (book.Id.ToString(), 3),
+                (book.Title, 40),
+                (book.Author, 20),
+                (status, 10)
+            );
         }
 
         Console.WriteLine("\n Tekan ENTER untuk kembali ke menu...");
@@ -62,16 +82,20 @@ static void ShowAllBooks()
     }
 }
 
-static void BorrowBook()
+static void BorrowBook(BorrowService borrowService)
 {
     Console.Clear();
     Console.WriteLine("=== Peminjaman Buku ===");
 
     // Tampilkan daftar pengguna
     Console.WriteLine("\nDaftar Pengguna:");
+    ConsoleTableHelper.PrintHeader(("ID", 3), ("Nama", 20));
     foreach (var u in DataStore.Users)
     {
-        Console.WriteLine($"{u.Id}. {u.Name}");
+        ConsoleTableHelper.PrintRow(
+            (u.Id.ToString(), 3),
+            (u.Name, 20)
+        );
     }
 
     Console.WriteLine("Masukkan ID User: ");
@@ -82,27 +106,25 @@ static void BorrowBook()
         return;
     }
 
-    var user = DataStore.Users.FirstOrDefault(u => u.Id == userId);
-    if (user is null)
-    {
-        Console.WriteLine("Pengguna tidak ditemukan.");
-        Console.ReadLine();
-        return;
-    }
-
     // Tampilkan buku yang tersedia
+    Console.WriteLine("\nDaftar Buku:");
+    ConsoleTableHelper.PrintHeader(("ID", 3), ("Judul", 40), ("Penulis", 20));
     var availableBooks = DataStore.Books.Where(b => !b.IsBorrowed).ToList();
     if (!availableBooks.Any())
     {
         Console.WriteLine("Semua buku sedang dipinjam.");
+        Console.WriteLine("Tekan ENTER untuk kembali ke menu...");
         Console.ReadLine();
         return;
     }
 
-    Console.WriteLine("\nBuku Tersedia:");
     foreach (var book in availableBooks)
     {
-        Console.WriteLine($"{book.Id}. {book.Title} karya {book.Author}");
+        ConsoleTableHelper.PrintRow(
+            (book.Id.ToString(), 3),
+            (book.Title, 40),
+            (book.Author, 20)
+        );
     }
 
     Console.WriteLine("Masukkan ID Buku yang ingin dipinjam: ");
@@ -113,46 +135,35 @@ static void BorrowBook()
         return;
     }
 
-    var bookToBorrow = availableBooks.FirstOrDefault(b => b.Id == bookId);
-    if (bookToBorrow is null)
-    {
-        Console.WriteLine("Buku tidak tersedia atau ID salah.");
-        Console.ReadLine();
-        return;
-    }
 
     // Proses peminjaman
-    bookToBorrow.IsBorrowed = true;
-    int transactionId = DataStore.Transactions.Count + 1;
-    var transaction = new BorrowTransaction(transactionId, user, bookToBorrow);
-    DataStore.Transactions.Add(transaction);
-
-    Console.WriteLine($"\n ✅ Buku '{bookToBorrow.Title}' berhasil dipinjam oleh {user.Name}.");
+    var success = borrowService.BorrowBook(userId, bookId, out var message);
+    Console.WriteLine($"\n{message}");
     Console.WriteLine("Tekan ENTER untuk kembali ke menu...");
     Console.ReadLine();
 }
 
-static void ReturnBook()
+static void ReturnBook(ReturnService returnService)
 {
     Console.Clear();
     Console.WriteLine("=== Pengembalian Buku ===");
 
-    var activeTransactions = DataStore.Transactions
-        .Where(t => t.ReturnedAt == null)
-        .ToList();
+    // var activeTransactions = DataStore.Transactions
+    //     .Where(t => t.ReturnedAt == null)
+    //     .ToList();
 
-    if (!activeTransactions.Any())
-    {
-        Console.WriteLine("Tidak ada transaksi aktif yang perlu dikembalikan.");
-        Console.ReadLine();
-        return;
-    }
+    // if (!activeTransactions.Any())
+    // {
+    //     Console.WriteLine("Tidak ada transaksi aktif yang perlu dikembalikan.");
+    //     Console.ReadLine();
+    //     return;
+    // }
 
-    Console.WriteLine("\nDaftar Buku yang Sedang Dipinjam:");
-    foreach (var trx in activeTransactions)
-    {
-        Console.WriteLine($"{trx.Id}. \"{trx.BorrowedBook.Title}\" oleh {trx.Borrower.Name} (Dipinjam sejak: {trx.BorrowedAt})");
-    }
+    // Console.WriteLine("\nDaftar Buku yang Sedang Dipinjam:");
+    // foreach (var trx in activeTransactions)
+    // {
+    //     Console.WriteLine($"{trx.Id}. \"{trx.BorrowedBook.Title}\" oleh {trx.Borrower.Name} (Dipinjam sejak: {trx.BorrowedAt})");
+    // }
 
     Console.Write("Masukkan ID transaksi yang ingin dikembalikan: ");
     if (!int.TryParse(Console.ReadLine(), out int transactionId))
@@ -162,19 +173,20 @@ static void ReturnBook()
         return;
     }
 
-    var transaction = activeTransactions.FirstOrDefault(t => t.Id == transactionId);
-    if (transaction is null)
-    {
-        Console.WriteLine("Transaksi tidak ditemukan atau sudah dikembalikan.");
-        Console.ReadLine();
-        return;
-    }
+    // var transaction = activeTransactions.FirstOrDefault(t => t.Id == transactionId);
+    // if (transaction is null)
+    // {
+    //     Console.WriteLine("Transaksi tidak ditemukan atau sudah dikembalikan.");
+    //     Console.ReadLine();
+    //     return;
+    // }
 
     // Proses pengembalian
-    transaction.ReturnedAt = DateTime.Now;
-    transaction.BorrowedBook.IsBorrowed = false;
-
-    Console.WriteLine($"\n✅ Buku \"{transaction.BorrowedBook.Title}\" berhasil dikembalikan oleh {transaction.Borrower.Name}.");
+    // transaction.ReturnedAt = DateTime.Now;
+    // transaction.BorrowedBook.IsBorrowed = false;
+    var success = returnService.ReturnBook(transactionId, out var message);
+    Console.WriteLine($"\n{message}");
+    // Console.WriteLine($"\n✅ Buku \"{transaction.BorrowedBook.Title}\" berhasil dikembalikan oleh {transaction.Borrower.Name}.");
     Console.WriteLine("Tekan ENTER untuk kembali ke menu...");
     Console.ReadLine();
 }

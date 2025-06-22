@@ -1,0 +1,38 @@
+# Build artifacts
+/bin
+/obj
+
+# User-specific files
+*.user
+*.rsuser
+*.suo
+*.vspx
+*.vsp
+
+# Rider / VSCode / Visual Studio
+/.idea
+/.vscode
+*.sln.iml
+
+# Configuration and logs
+*.log
+*.tmp
+
+# .NET-specific
+*.dll
+*.exe
+*.pdb
+*.cache
+*.db
+
+# Project-specific backup
+*.bak
+*.old
+
+# Dependency cache
+/.nuget
+/packages
+
+# OS-specific
+.DS_Store
+Thumbs.db
