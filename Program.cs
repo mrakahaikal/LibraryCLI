@@ -25,7 +25,11 @@ while (isRunning)
     Console.WriteLine("1. Lihat Semua Buku");
     Console.WriteLine("2. Peminjaman Buku");
     Console.WriteLine("3. Pengembalian Buku");
-    Console.WriteLine("4. Exit");
+    Console.WriteLine("4. Tambah Buku");
+    Console.WriteLine("5. Hapus Buku");
+    Console.WriteLine("6. Tambah User");
+    Console.WriteLine("7. Hapus User");
+    Console.WriteLine("8. Exit");
     Console.Write("Pilihan Anda: ");
 
     var input = Console.ReadLine();
@@ -42,6 +46,18 @@ while (isRunning)
             ReturnBook(returnService);
             break;
         case "4":
+            AddNewBook(bookRepo);
+            break;
+        case "5":
+            DeleteBook(bookRepo);
+            break;
+        case "6":
+            AddNewUser(userRepo);
+            break;
+        case "7":
+            DeleteUser(userRepo);
+            break;
+        case "8":
             isRunning = false;
             break;
         default:
@@ -200,5 +216,89 @@ static void ReturnBook(ReturnService returnService)
     var success = returnService.ReturnBook(transactionId, out var message);
     Console.WriteLine($"\n{message}");
     Console.WriteLine("Tekan ENTER untuk kembali ke menu...");
+    Console.ReadLine();
+}
+
+static void AddNewBook(BookRepository repo)
+{
+    Console.Clear();
+    Console.WriteLine("=== Tambah Buku Baru ===");
+
+    Console.Write("Judul Buku\t: ");
+    var title = Console.ReadLine() ?? "";
+
+    Console.Write("Penulis\t\t: ");
+    var author = Console.ReadLine() ?? "";
+
+    int nextId = repo.GetAll().Count + 1;
+    var newBook = new Book(nextId, title, author);
+    repo.Add(newBook);
+
+    Console.WriteLine($"\n✅ Buku \"{title}\" berhasil ditambahkan.");
+    Console.WriteLine("Tekan ENTER untuk kembali...");
+    Console.ReadLine();
+}
+
+static void DeleteBook(BookRepository repo)
+{
+    Console.Clear();
+    Console.WriteLine("=== Hapus Buku ===");
+
+    Console.Write("Masukkan ID Buku: ");
+    if (!int.TryParse(Console.ReadLine(), out int id))
+    {
+        Console.WriteLine("ID tidak valid.");
+    }
+    else if (repo.Remove(id))
+    {
+        Console.WriteLine("✅ Buku berhasil dihapus.");
+    }
+    else {
+
+        Console.WriteLine("❌ Buku tidak ditemukan.");
+    }
+
+    Console.WriteLine("Tekan ENTER untuk kembali...");
+    Console.ReadLine();
+}
+
+static void AddNewUser(UserRepository repo)
+{
+    Console.Clear();
+    Console.WriteLine("=== Tambah Pengguna Baru ===");
+
+    Console.Write("Nama\t: ");
+    var name = Console.ReadLine() ?? "";
+
+
+    int nextId = repo.GetAll().Count + 1;
+    var newUser = new User(nextId, name);
+    repo.Add(newUser);
+
+    Console.WriteLine($"\n✅ Pengguna baru bernama \"{name}\" berhasil ditambahkan.");
+    Console.WriteLine("Tekan ENTER untuk kembali...");
+    Console.ReadLine();
+}
+
+static void DeleteUser(UserRepository repo)
+{
+    Console.Clear();
+    Console.WriteLine("=== Hapus Pengguna ===");
+
+    Console.Write("Masukkan ID Pengguna: ");
+    if (!int.TryParse(Console.ReadLine(), out int id))
+    {
+        Console.WriteLine("ID tidak valid.");
+    }
+    else if (repo.Remove(id))
+    {
+        Console.WriteLine("✅ Pengguna berhasil dihapus.");
+    }
+    else {
+
+        Console.WriteLine("❌ Pengguna tidak ditemukan.");
+    }
+
+    Console.WriteLine("Tekan ENTER untuk kembali...");
     Console.ReadLine();
 }

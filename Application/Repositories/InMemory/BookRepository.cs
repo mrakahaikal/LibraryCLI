@@ -13,4 +13,12 @@ public class BookRepository : IBookRepository
     {
         // Empty
     }
+    public void Add(Book book) => DataStore.Books.Add(book);
+    public bool Remove(int id)
+    {
+        var book = GetById(id);
+        if (book is null) return false; 
+        DataStore.Books.Remove(book);
+        return true;
+    } 
 }
