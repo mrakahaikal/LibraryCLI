@@ -15,12 +15,12 @@ LibraryCLI adalah aplikasi berbasis .NET yang berjalan di terminal dan dirancang
 
 Proyek ini mengikuti pendekatan layering yang jelas:
 
-Program.cs (CLI UI)
-↓
-Services (BorrowService, ReturnService, BookService)
-↓
-Repositories (InMemoryBookRepository, UserRepository, etc)
-↓
+Program.cs (CLI UI)  
+↓  
+Services (BorrowService, ReturnService, BookService)  
+↓  
+Repositories (InMemoryBookRepository, UserRepository, etc)  
+↓  
 Entities + DataStore (In-Memory Simulation)
 
 Semua business logic dipisah dari antarmuka CLI sehingga mudah diubah ke REST API, GUI, maupun microservice di masa depan.
@@ -37,20 +37,20 @@ dotnet run
 
 ## 📂 Struktur Folder
 
-/Domain → Entitas (Book, User, BorrowTransaction)
-/Application → Repositories & Services
-/Infrastructure → DataStore & Utils (TablePrinter)
+/Domain → Entitas (Book, User, BorrowTransaction)  
+/Application → Repositories & Services  
+/Infrastructure → DataStore & Utils (TablePrinter)  
 Program.cs → CLI utama dengan top-level statements
 
 ## 📦 Roadmap Berikutnya
 
-[ ] Export transaksi ke file
+- [ ] Export transaksi ke file
 
-[ ] Validasi tanggal dan peminjam ganda
+- [ ] Validasi tanggal dan peminjam ganda
 
-[ ] Refactor ke Clean Architecture (ASP.NET Core)
+- [ ] Refactor ke Clean Architecture (ASP.NET Core)
 
-[ ] Integrasi EF Core
+- [ ] Integrasi EF Core
 
 ## 🧑‍💻 Dibuat oleh
 
